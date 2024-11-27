@@ -1,10 +1,12 @@
-<nav class="navbar navbar-expand-lg bg-success navbar-dark">
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">한빛미디어</a>
-        <button>
-            <span></span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            aria-controls="navbarSupportedContent" data-bs-target="#navbarSupportedContent" 
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- ================  ================ -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
@@ -21,7 +23,7 @@
                 </li>
             </ul>
             <!-- ================  ================ -->
-            <div>
+            <div class="d-flex">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item" id="login">
                         <a class="nav-link active" aria-current="page" href="/login">로그인</a>
@@ -34,6 +36,60 @@
                     </li>
                 </ul>
             </div>
+            <!-- ================  ================ -->
         </div>   
     </div>
 </nav>
+
+<!-- 배너를 웹에 넣음 -->
+<div id="slider-div">
+    <div>
+        <img src="/images/captain.jpg" alt="배너ChatGPT" width="100%">
+    </div>
+    <div>
+        <img src="/images/ironman.jpg" alt="배너ChatGPT" width="100%">
+    </div>
+    <div>
+        <img src="/images/tor.jpg" alt="배너ChatGPT" width="100%">
+    </div>
+    <div>
+        <img src="/images/hulk.jpg" alt="배너ChatGPT" width="100%">
+    </div>
+    <div>
+        <img src="/images/tanos.jpg" alt="배너ChatGPT" width="100%">
+    </div>
+</div>
+
+<!-- 스크립트 -->
+<script type="module">
+    const applySlider = () => {
+        // 제이쿼리를 통해서 slider-div를 가져옵니다.
+        $('#slider-div').slick({
+            slide: 'div',      // 슬라이드 되어야할 태그 | ex) div, li
+            infinite: true,    // 무한 반복 옵션
+            slidesToShow: 1,   // 한 화면에 보여질 컨텐츠 개수
+            slidesToScroll: 1, // 스크롤 한번에 움직일 컨텐츠 개수
+            speed: 100,        // 다음 버튼 누르고 다음 화면 뜨는데까지 걸리는 시간(ms)
+            arrows: true,      // 옆으로 이동하는 화살표 표시 여부
+            dots: true,        // 스크롤바 아래 점으로 페이지네이션 여부
+            autoplay: true,
+            autoplaySpeed: 10000,
+            pauseOnHover: true,
+            vertical: false,
+            prevArrow: "<button type='button' class='slick-prev'><div style='font-size:1.5rem;color:white;'>&lt;</div></button>",
+            nextArrow: "<button type='button' class='slick-next'><div style='font-size:1.5rem;color:white;'>&gt;</div></button>",
+            dotsClass: "slick-dots",
+            draggable: true,    // 드래그 가능 여부
+            responsive: [       // 반응형 웹 구현
+                {
+                    breakpoint: 960,    // 화면 사이즈 960px
+                    settings: {slidesToShow: 3}
+                }, {
+                    breakpoint: 768,    // 화면 사이즈 768px
+                    settings: {slideToShow: 2}
+                }
+            ]
+        })
+    }
+    applySlider()
+</script>
