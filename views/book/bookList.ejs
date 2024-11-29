@@ -20,6 +20,30 @@
     <button class="btn btn-primary btn-sm px-5" id="next">다음</button>
 </div>
 
+
+<!-- 카카오 도서검색 결과를 출력할 공간 마련해둠 -->
+<div class="row" id="list_book"></div>
+
+<!-- mustach -->
+<script type="text/x-handlebars-template" id="temp-book">
+    {{#each documents}}
+    <div>
+        <div>
+            <div>
+                <img src="{{image thumbnail}}" index="{{@index}}" alt="도서이미지" style="cursor:pointer; width:80%">
+                <div class="ellipsis mt-2">{{title}}</div>
+            </div>
+            <div>
+                <div>
+                    <span style="cursor: pointer; color: green">CART</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</script>
+
+
 <!-- 이동 버튼 | script -->
 <script>
     let page = 1
@@ -38,9 +62,14 @@
 
 <!-- 도서 데이터 가져오기 | 카카오API -->
 <script>
+    Handlebars.registerHelper("image", function(thum) {
+        if(thum) return thum
+        else return "https://placehold.co/120x174"
+    })
+
     let query = $(frm.query).val()
 
-    const getBookList = () => {
+    const getList = () => {
         // 사용자가 입력한 검색 키워드 사용
         console.log(`page=${page}, query=${query}`)
 
@@ -51,7 +80,29 @@
             url: "https://dapi.kakao.com/v3/search/book?target=title",
             headers: { Authorization: "KakaoAK 5b500ca7bd3e4c9026426d1d3ad0d9d1" },
             data : { query: query, page: page, size: 6}, // 파라미터로 넘어가는 값-노출
+            
+            dataType: "json", 
+                success: function(data) {
+                    console.log(data)
+                    // 응답으로 받은 정보를 data가 쥐고 있다. data는 json 형식이다.
+                    let temp = Handlebars.compile($("#temp-book").html())
+                    $("#list_book").html(temp(data))
+                },
+                error: function(error) {
+                    console.log(error)
+                }
         })
     }
+    // 아래 함수를 주석으로 막으면 조회결과는 없다.
+    getList()
 
+    // 검색창에서 입력한 책 제목을 읽어오기
+    $(frm).on("submit", (e) => {
+        console.log("전송 호출")
+        e.preventDefault()  // submit이슈 - 새로고침이 발생함.
+
+        query = $(frm.query).val()  // 사용자가 입력한 책 제목
+        page = 1    // 1페이지를 보여줘 - 페이징 처리
+        getList()   // 도서 정보를 카카오 검색
+    })
 </script>
