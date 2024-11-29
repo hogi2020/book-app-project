@@ -2,7 +2,7 @@
 <div class="row mt-5 justify-content-end">
     <div class="col-6 col-md-4">
         <!-- 검색 키워드 -->
-        <form action="frm">
+        <form name="frm">
             <div class="input-group">
                 <input type="text" name="query" class="form-control" value="자바" />
                 <button class="btn btn-success">검색</button>
@@ -44,7 +44,14 @@
         // 사용자가 입력한 검색 키워드 사용
         console.log(`page=${page}, query=${query}`)
 
-        // 
+        // 아래 함수는 jQuery-1.12.0.js에서 제공하는 함수 이다.
+        // $.ajax()는 비동기 통신 처리를 위한 함수 사용이다. - waiting이 있다.
+        $.ajax({
+            method: "GET",
+            url: "https://dapi.kakao.com/v3/search/book?target=title",
+            headers: { Authorization: "KakaoAK 5b500ca7bd3e4c9026426d1d3ad0d9d1" },
+            data : { query: query, page: page, size: 6}, // 파라미터로 넘어가는 값-노출
+        })
     }
 
 </script>
