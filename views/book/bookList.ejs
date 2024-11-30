@@ -12,6 +12,46 @@
     </div>
 </div>
 
+<hr>
+
+<!-- 카카오 도서검색 결과를 출력할 공간 마련해둠 -->
+<div class="row" id="list_book"></div>
+
+<!-- 도서 목록 템플릿  
+for문을 안쓰는 대신에 script태그로 묶어주고 내가 정한 타입을 적어서 내가 알아볼 수 있게 해줘
+태그만 사용해도 되게 해줄게 대신에... -->
+<!-- mustach -->
+<script type="text/x-handlebars-template" id="temp-book">
+    {{#each documents}}
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card my-2">
+            <div class="card-body">
+                <!-- index는 하나의 속성으로 "2"와 같은 문자열로 명시되며, 반환 시 2로 반환됩니다. -->
+                <img src="{{image thumbnail}}" index="{{@index}}" alt="도서이미지" style="cursor:pointer; width:80%">
+                <div class="ellipsis mt-2">{{title}}</div>
+            </div>
+            <div class="card-footer" style="font-size: 0.9rem;">
+                <div class="text-center">
+                    {{format price}}
+                    <span style="cursor: pointer; color: green">CART</span>
+                </div>
+            </div>
+        </div>
+        <%-include("bookModal.ejs") %>
+    </div>
+    {{/each}}
+</script>
+
+<!-- 이미지 클릭 이벤트 -->
+<script>
+    // #list_book 내부의 .card 안에 있는 이미지를 클릭하면 이벤트 발생
+    $("#list_book").on("click", ".card img", function() {
+        let index = $(this).attr("index") // this는 클릭된 .card img를 의미
+        console.log(index);
+        $(`#modal${index}`).modal("show")
+    })
+</script>
+
 
 <!-- 이동 버튼 -->
 <div class="text-center mt-2">
@@ -20,35 +60,11 @@
     <button class="btn btn-primary btn-sm px-5" id="next">다음</button>
 </div>
 
-
-<!-- 카카오 도서검색 결과를 출력할 공간 마련해둠 -->
-<div class="row" id="list_book"></div>
-
-<!-- mustach -->
-<script type="text/x-handlebars-template" id="temp-book">
-    {{#each documents}}
-    <div>
-        <div>
-            <div>
-                <img src="{{image thumbnail}}" index="{{@index}}" alt="도서이미지" style="cursor:pointer; width:80%">
-                <div class="ellipsis mt-2">{{title}}</div>
-            </div>
-            <div>
-                <div>
-                    <span style="cursor: pointer; color: green">CART</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{/each}}
-</script>
-
-
 <!-- 이동 버튼 | script -->
 <script>
     let page = 1
 
-    $("next").on("click", () => {
+    $("#next").on("click", () => {
         page++
         getList()
     })
@@ -65,6 +81,9 @@
     Handlebars.registerHelper("image", function(thum) {
         if(thum) return thum
         else return "https://placehold.co/120x174"
+    })
+    Handlebars.registerHelper("format", function(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
     })
 
     let query = $(frm.query).val()
@@ -87,12 +106,25 @@
                     // 응답으로 받은 정보를 data가 쥐고 있다. data는 json 형식이다.
                     let temp = Handlebars.compile($("#temp-book").html())
                     $("#list_book").html(temp(data))
+
+                    // 페이지 네비게이션 추가
+                    let is_end = data.meta.is_end      // 마지막 페이지 여부
+                    let total = data.meta.total_count  // 검색 가능한 데이터 수
+                    let last = Math.ceil(total/6)      // 마지막 페이지
+                    $("#page").html(`${page}/${last}`)
+
+                    if(page === 1) $("#prev").attr("disabled", true)
+                    else $("#prev").attr("disabled", false)
+
+                    if(is_end) $("#next").attr(disabled, true)
+                    else $("#next").attr("disabled", false)
                 },
                 error: function(error) {
                     console.log(error)
                 }
         })
     }
+
     // 아래 함수를 주석으로 막으면 조회결과는 없다.
     getList()
 
