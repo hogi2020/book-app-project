@@ -22,7 +22,7 @@
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"
 
     const auth = getAuth(app)
-
+    
     $(frm).on('submit', (e) => {
         e.preventDefault()
         let email = $(frm.email).val()
@@ -34,6 +34,14 @@
             // 요청이 정상이면 서버로부터 response 변수에 정보를 돌려 받는다.
             .then((data) => {
                 console.log(data)
+                localStorage.setItem("email", data.user.email)
+                localStorage.setItem("uid", data.user.uid)
+                
+                location.href = "/"
             })
+            .catch((error) => {
+                const errorCode = error.code
+                const errorMessage = error.message
+            }) // end of signInWithEmailAndPassword
     })
 </script>

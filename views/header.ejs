@@ -21,6 +21,9 @@
                 <li class="nav-item" id="cart" style="display:none">
                     <a class="nav-link active" aria-current="page" href="/users/cart">장바구니</a>
                 </li>
+                <li class="nav-item" id="mypage" style="display:none">
+                    <a class="nav-link active" aria-current="page" href="/users/mypage">MyPage</a>
+                </li>
             </ul>
             <!-- ================  ================ -->
             <div class="d-flex">
@@ -28,8 +31,8 @@
                     <li class="nav-item" id="login">
                         <a class="nav-link active" aria-current="page" href="/login">로그인</a>
                     </li>
-                    <li class="nav-item" id="mypage" style="display:none">
-                        <a class="nav-link active" aria-current="page" href="/users/mypage">MyPage</a>
+                    <li class="nav-item" id="email" style="display:none">
+                        <a class="nav-link active" aria-current="page" href="#">이메일정보출력위치</a>
                     </li>
                     <li class="nav-item" id="logout" style="display:none">
                         <a class="nav-link active" aria-current="page" href="#">로그아웃</a>
@@ -92,5 +95,36 @@
             wrap: true,
             pause: 'hover'
         })
+    })
+</script>
+
+
+<!-- 로그인, 로그아웃 동작 정의 -->
+<script type="module">
+    import { app } from "/javascripts/firebase.js"
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"
+
+    // 로그인 성공 시, 뷰 전환
+    if(localStorage.getItem("email")) {
+        console.log("email이 존재하면")
+                    
+        $("#login, #logout, #mypage, #email, #cart").toggle()
+        $("#email a").html(localStorage.getItem('email'))
+    }
+
+
+    // 로그아웃 시, 동작
+    const auth = getAuth(app)
+    $("#logout").on("click", (e) => {
+        signOut(auth)
+            .then(() => {
+                console.log("로그아웃 성공")
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        
+        localStorage.clear()
+        location.href = "/"
     })
 </script>
