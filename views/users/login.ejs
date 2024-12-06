@@ -1,0 +1,39 @@
+<div class="row my-5 justify-content-center">
+    <div class="col-8 col-md-6 col-lg-4">
+        <h3 class="text-center mb-5">로그인</h3>
+        <form id="login" name="frm", method="post">
+            <div class="input-group my-2">
+                <div class="input-group-text">이 메 일</div>
+                <input class="form-control" id="email" name="email"/>
+            </div>
+            <div class="input-group">
+                <div class="input-group-text">비밀번호</div>
+                <input class="form-control" name="password" type="password", value="12345678"/>
+            </div>
+            <div class="my-3"><button class="btn btn-success w-100">로그인</button></div>
+            <div class="text-end mt-3"><a href="/join">회원가입</a></div>
+        </form>
+    </div>
+</div>
+
+
+<script type="module">
+    import { app } from "/javascripts/firebase.js"
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"
+
+    const auth = getAuth(app)
+
+    $(frm).on('submit', (e) => {
+        e.preventDefault()
+        let email = $(frm.email).val()
+        let password = $(frm.password).val()
+
+        console.log(`${email}, ${password}`)
+
+        signInWithEmailAndPassword(auth, email, password)
+            // 요청이 정상이면 서버로부터 response 변수에 정보를 돌려 받는다.
+            .then((data) => {
+                console.log(data)
+            })
+    })
+</script>

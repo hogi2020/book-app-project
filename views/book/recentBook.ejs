@@ -1,0 +1,73 @@
+<div id="recent_book" class="row"></div>
+
+
+<!-- 최신도서목록 템플릿 -->
+<script type="text/x-handlebars-template" id="temp_recent">
+    {{#each documents}}
+    <div class="col-6 col-md-2 my-5">
+        <div class="card-body text-center">
+            <div class="card-body text-center">
+                <img src="{{thumbnail}}" index="{{@index}}" style="cursor:pointer;width:80%"/>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</script>
+
+
+<!-- 최신도서목록 호출 함수 -->
+<script>
+    const getRecent = () => {
+
+        $.ajax({
+            method: "GET",
+            url: "https://dapi.kakao.com/v3/search/book?target=title",
+            headers: { Authorization: "KakaoAK bf56a7a88829f13ba8fef4e0ed4c2aeb" },
+            data: { query: query, page: 1, size: 10, sort: 'latest' },
+            dataType: "json",
+
+            success: function (data) {
+                let temp = Handlebars.compile($("#temp_recent").html())
+                $("#recent_book").html(temp(data))
+                recentSlider()
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+
+
+    function recentSlider() {
+        $("#recent_book").slick({
+            slide: 'div',
+            infinite: true,
+            slidesToShow: 6,
+            slidesToScroll: 1,
+            arrows: true,
+            dots: true,
+            dotsClass: "slick-dots",
+            autoplay: true,
+            autoplaySpeed: 0,
+            speed: 5000,
+            pauseOnHover: true,
+            cssEase: 'linear',
+
+            // 반응형 웹구현 옵션
+            responsive: [
+                {
+                    breakpoint: 960,
+                    settings: { slidersToShow: 4 }
+                },
+                {
+                    breakpoint: 768,
+                    settings: { slidersToShow: 3 }
+                }
+            ]
+        })
+    }
+
+    // 함수 실행
+    getRecent()
+
+</script>
