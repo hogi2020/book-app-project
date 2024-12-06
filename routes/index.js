@@ -6,10 +6,6 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express', pageName: 'home.ejs' });
 });
 
-router.get('/book', function(req, res, next) {
-  res.render('index', { title: '도서검색', pageName: 'book/bookList.ejs' });
-});
-
 router.get('/login', function(req, res, next) {
   res.render('index', { title: '로그인', pageName: 'users/login.ejs' });
 });
